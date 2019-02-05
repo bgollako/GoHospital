@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bitbucket-eng-sjc1.cisco.com/an/GoHospital/db"
 	"bitbucket-eng-sjc1.cisco.com/an/GoHospital/server"
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -16,7 +18,18 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 	fmt.Println("Starting Server ...")
-	err := httpServer.ListenAndServe()
+	err := db.TestConnection(context.Background())
+	if err != nil {
+		fmt.Println("Error while pinging mongo db " + err.Error())
+		return
+	}
+	fmt.Println("Successfully pinged mongodb")
+	err = db.InitialiseDummyPatients(context.Background())
+	if err != nil {
+		fmt.Println("Error while initializing patients " + err.Error())
+		return
+	}
+	err = httpServer.ListenAndServe()
 	if err != nil {
 		fmt.Println("Error while starting http server : " + err.Error())
 	}
