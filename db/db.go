@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
 	"github.com/mongodb/mongo-go-driver/x/network/connstring"
@@ -54,4 +55,18 @@ func InitialiseDummyPatients(ctx context.Context) error {
 	documents := []interface{}{p1, p2, p3, p4, p5}
 	_, err := DBClient.client.Database("Test").Collection("Patients").InsertMany(ctx, documents)
 	return err
+}
+
+func GetAllPatients(ctx context.Context) ([]Patient, error)  {
+	patients := make([]Patient, 0)
+	c, err := DBClient.client.Database("Test").Collection("Patients").Find(ctx, bson.M{})
+	if err != nil{
+		return nil, err
+	}
+	for c.Next(ctx) {
+		p := Patient{}
+		c.Decode(&p)
+		patients = append(patients, p)
+	}
+	return patients, nil
 }
