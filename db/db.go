@@ -21,10 +21,10 @@ func init() {
 		ConnString: connstring.ConnString{
 			Username: "mongoadmin",
 			Password: "mongopassword",
-			Original: "mongodb://db:27017",
+			Original: "mongodb://localhost:27017",
 		},
 	}
-	customClient, err := mongo.NewClientWithOptions("mongodb://db:27017", opts)
+	customClient, err := mongo.NewClientWithOptions("mongodb://localhost:27017", opts)
 	if err != nil {
 		fmt.Println("Error while initializing mongo client " + err.Error())
 		return

@@ -12,7 +12,7 @@ import (
 func main() {
 	handler := &server.CustomHandler{}
 	httpServer := http.Server{
-		Addr:         ":8080",
+		Addr:         ":8082",
 		Handler:      handler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
