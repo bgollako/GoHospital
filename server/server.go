@@ -13,17 +13,17 @@ import (
 type CustomHandler struct {
 }
 
-func InvalidUrl(w http.ResponseWriter)  {
+func InvalidUrl(w http.ResponseWriter) {
 	w.WriteHeader(400)
 	w.Write([]byte("Invalid URL"))
 }
 
-func InternalError(w http.ResponseWriter, err error)  {
+func InternalError(w http.ResponseWriter, err error) {
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
 }
 
-func Success(w http.ResponseWriter, data []byte)  {
+func Success(w http.ResponseWriter, data []byte) {
 	w.WriteHeader(200)
 	w.Write(data)
 }
@@ -52,7 +52,7 @@ func (s *CustomHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err = db.PostPatient(ctx, patients)
-		if err != nil{
+		if err != nil {
 			InternalError(w, err)
 			return
 		}

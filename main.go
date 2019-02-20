@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func Start()  {
+func Start() {
 	handler := &server.CustomHandler{}
 	httpServer := http.Server{
 		Addr:         ":8082",
@@ -42,7 +42,7 @@ func main() {
 	Start()
 }
 
-func reflectOnStruct()  {
+func reflectOnStruct() {
 	p := db.Patient{}
 	t := reflect.TypeOf(p)
 	for i := 0; i < t.NumField(); i++ {
@@ -50,6 +50,3 @@ func reflectOnStruct()  {
 		fmt.Println(f.Name)
 	}
 }
-
-
-

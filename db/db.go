@@ -17,9 +17,9 @@ import (
 var DBClient *mongoClient
 
 const (
-	DB_TEST  = "Test"
+	DB_TEST             = "Test"
 	COLLECTION_PATIENTS = "Patients"
-	ID = "_id"
+	ID                  = "_id"
 )
 
 type mongoClient struct {
@@ -73,16 +73,16 @@ func InitialiseDummyPatients(ctx context.Context) error {
 	return err
 }
 
-func GetAllPatients(ctx context.Context) ([]Patient, error)  {
+func GetAllPatients(ctx context.Context) ([]Patient, error) {
 	patients := make([]Patient, 0)
 	c, err := DBClient.client.Database(DB_TEST).Collection(COLLECTION_PATIENTS).Find(ctx, bson.M{})
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	for c.Next(ctx) {
 		p := Patient{}
 		err = c.Decode(&p)
-		if err != nil{
+		if err != nil {
 			fmt.Println("Error while decoding patients", err)
 		}
 		patients = append(patients, p)
@@ -90,9 +90,9 @@ func GetAllPatients(ctx context.Context) ([]Patient, error)  {
 	return patients, nil
 }
 
-func PostPatient(ctx context.Context, patients []interface{}) error  {
+func PostPatient(ctx context.Context, patients []interface{}) error {
 	err := checkPatients(patients)
-	if err != nil{
+	if err != nil {
 		fmt.Println("Error while parsing patients", err)
 		return err
 	}
@@ -109,7 +109,7 @@ func checkPatients(patients []interface{}) error {
 	p := Patient{}
 	t := reflect.TypeOf(p)
 	for _, patient := range patients {
-		for i :=0; i <t.NumField(); i++ {
+		for i := 0; i < t.NumField(); i++ {
 			f := t.Field(i)
 			if f.Name == "ID" {
 				continue
@@ -142,9 +142,9 @@ func checkPatients(patients []interface{}) error {
 	return nil
 }
 
-func UpdatePatient(ctx context.Context, id string, patient *Patient) (int64, error)  {
+func UpdatePatient(ctx context.Context, id string, patient *Patient) (int64, error) {
 	err := checkNilValues(patient)
-	if err != nil{
+	if err != nil {
 		return 0, err
 	}
 	objectId, err := primitive.ObjectIDFromHex(id)
@@ -152,13 +152,13 @@ func UpdatePatient(ctx context.Context, id string, patient *Patient) (int64, err
 		return 0, err
 	}
 	cursor, err := DBClient.client.Database(DB_TEST).Collection(COLLECTION_PATIENTS).UpdateOne(ctx, bson.M{ID: objectId},
-	bson.D{
-		{"$set", bson.D{
-			{"name", patient.Name},
-			{"age", patient.Age},
-			{"disease", patient.Disease},
-		}},
-	})
+		bson.D{
+			{"$set", bson.D{
+				{"name", patient.Name},
+				{"age", patient.Age},
+				{"disease", patient.Disease},
+			}},
+		})
 	if err != nil {
 		fmt.Println("Error while updating patient", err)
 		return 0, err
@@ -167,7 +167,7 @@ func UpdatePatient(ctx context.Context, id string, patient *Patient) (int64, err
 	return cursor.ModifiedCount, err
 }
 
-func checkNilValues(p *Patient) error{
+func checkNilValues(p *Patient) error {
 	if strings.TrimSpace(p.Name) == "" {
 		return errors.New("name is empty")
 	}
@@ -191,6 +191,6 @@ func DeletePatient(ctx context.Context, id string) (int64, error) {
 		fmt.Println("Error while deleting patient", err)
 		return 0, err
 	}
-	fmt.Println("Deleted", cursor.DeletedCount," patients")
+	fmt.Println("Deleted", cursor.DeletedCount, " patients")
 	return cursor.DeletedCount, nil
 }
